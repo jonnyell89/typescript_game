@@ -1,5 +1,6 @@
 import "./style.scss";
 
+// Grid
 const container = document.querySelector<HTMLDivElement>(".container");
 
 // Block collections
