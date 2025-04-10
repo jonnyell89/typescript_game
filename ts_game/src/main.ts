@@ -56,24 +56,38 @@ const generateCell = (x: number, y: number): Cell => {
 
 const generateGrid = (GRID_WIDTH: number, GRID_HEIGHT: number): Cell[][] => {
   // y-axis array
-  const cells: Cell[][] = [];
+  const minesweeperGrid: Cell[][] = [];
   for (let y = 0; y < GRID_HEIGHT; y++) {
     // x-axis array
     const row: Cell[] = [];
     for (let x = 0; x < GRID_WIDTH; x++) {
+      // Calls helper function
       const cell: Cell = generateCell(x, y);
       // Pushes new Cell object to x-axis array
       row.push(cell);
     }
     // Pushes x-axis array to y-axis array
-    cells.push(row);
+    minesweeperGrid.push(row);
   }
   // Returns two-dimensional array of Cell objects
-  return cells;
+  return minesweeperGrid;
 };
 
-generateGrid(GRID_WIDTH, GRID_HEIGHT);
+const minesweeperGrid = generateGrid(GRID_WIDTH, GRID_HEIGHT);
 
-const assignMine = (grid: Cell[][], MINE_COUNT: number) => {
-  return;
+const assignMines = (grid: Cell[][], MINE_COUNT: number) => {
+  let assignedMines = 0;
+  while (assignedMines < MINE_COUNT) {
+    const xRandom = Math.floor(Math.random() * GRID_WIDTH);
+    const yRandom = Math.floor(Math.random() * GRID_HEIGHT);
+
+    if (grid[yRandom][xRandom].hasMine === false) {
+      grid[yRandom][xRandom].hasMine = true;
+      assignedMines = assignedMines + 1;
+    } else continue;
+  }
 };
+
+assignMines(minesweeperGrid, MINE_COUNT);
+
+console.log(minesweeperGrid);
