@@ -7,8 +7,8 @@ const MINE_COUNT = 10;
 
 type Cell = {
   cellElement: HTMLButtonElement;
-  x_coord: number;
-  y_coord: number;
+  xCoord: number;
+  yCoord: number;
   isHidden: boolean;
   hasNumber: boolean;
   hasFlag: boolean;
@@ -34,6 +34,26 @@ const bottomContainer =
   document.querySelector<HTMLElement>(".bottom-container");
 const grid = document.querySelector<HTMLDivElement>(".bottom-container__grid");
 
+const generateCell = (x: number, y: number): Cell => {
+  // Creates new button element
+  const button = document.createElement("button");
+  // Assigns class "grid__btn" to new button element
+  button.classList.add("grid__btn");
+  // Appends new button element to grid div element
+  grid?.appendChild(button);
+  // Creates new Cell object
+  return {
+    cellElement: button,
+    xCoord: x,
+    yCoord: y,
+    isHidden: true,
+    hasNumber: false,
+    hasFlag: false,
+    hasMine: false,
+    adjacentMines: 0,
+  };
+};
+
 const generateGrid = (GRID_WIDTH: number, GRID_HEIGHT: number): Cell[][] => {
   // y-axis array
   const cells: Cell[][] = [];
@@ -41,23 +61,7 @@ const generateGrid = (GRID_WIDTH: number, GRID_HEIGHT: number): Cell[][] => {
     // x-axis array
     const row: Cell[] = [];
     for (let x = 0; x < GRID_WIDTH; x++) {
-      // Creates new button element
-      const button = document.createElement("button");
-      // Assigns class "grid__btn" to new button element
-      button.classList.add("grid__btn");
-      // Appends new button element to grid div element
-      grid?.appendChild(button);
-      // Creates new Cell object
-      const cell: Cell = {
-        cellElement: button,
-        x_coord: x,
-        y_coord: y,
-        isHidden: true,
-        hasNumber: false,
-        hasFlag: false,
-        hasMine: false,
-        adjacentMines: 0,
-      };
+      const cell: Cell = generateCell(x, y);
       // Pushes new Cell object to x-axis array
       row.push(cell);
     }
@@ -69,3 +73,7 @@ const generateGrid = (GRID_WIDTH: number, GRID_HEIGHT: number): Cell[][] => {
 };
 
 generateGrid(GRID_WIDTH, GRID_HEIGHT);
+
+const assignMine = (grid: Cell[][], MINE_COUNT: number) => {
+  return;
+};

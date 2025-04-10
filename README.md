@@ -122,8 +122,8 @@ The game requires a grid of cells, represented as a two-dimensional array.
 Each cell of the grid is to be a Cell type object, containing all necessary information:
 
     cellElement: button;
-    x coordinate: number;
-    y coordinate: number;
+    xCoord: number;
+    yCoord: number;
     isHidden: boolean;
     hasNumber: boolean;
     hasFlag: boolean;
@@ -136,9 +136,23 @@ A generateCell(x: number, y: number) function that generates Cell type objects.
 
     Properties of type boolean are set to default values.
 
+    Returns a Cell type object.
+
     This function is called as a helper function to the generateGrid function.
 
 A generateGrid(GRID_WIDTH: number, GRID_HEIGHT: number) function to generate a two-dimensional list of Cell type objects, representing the minesweeper grid.
+
+Input values are grid dimensions, set as global variables.
+
+Nested for loop:
+
+    Generates a two-dimensional array, representing the minesweeper grid.
+
+    Generates x and y coordinates.
+
+    Calls the generateCell helper function at every index position in the two-dimensional array.
+
+    Returns a two-dimensional array of Cell type objects, representing the minesweeper grid.
 
 A function that uses pseudo random numbers to generate grid coordinates for mine placements.
 
