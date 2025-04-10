@@ -1,34 +1,71 @@
 import "./style.scss";
+// npm run dev
 
-// Grid
-const container = document.querySelector<HTMLDivElement>(".container");
+const GRID_WIDTH = 9;
+const GRID_HEIGHT = 9;
+const MINE_COUNT = 10;
 
-// Block collections
-const allBlocks =
-  document.querySelectorAll<HTMLDivElement>(".container__block");
-const lgBlocks = document.querySelectorAll<HTMLDivElement>(
-  ".container__block--lg"
-);
-const mdBlocks = document.querySelectorAll<HTMLDivElement>(
-  ".container__block--md"
-);
-const smBlocks = document.querySelectorAll<HTMLDivElement>(
-  ".container__block--sm"
-);
-const emBlocks = document.querySelectorAll<HTMLDivElement>(
-  ".container__block--em"
-);
+type Cell = {
+  cellElement: HTMLButtonElement;
+  x_coord: number;
+  y_coord: number;
+  isHidden: boolean;
+  hasNumber: boolean;
+  hasFlag: boolean;
+  hasMine: boolean;
+  adjacentMines: number;
+};
 
-// Individual blocks
-const lgBlock1 = document.querySelector<HTMLDivElement>("#lg");
-const mdBlockH1 = document.querySelector<HTMLDivElement>("#md-1-h");
-const mdBlockV1 = document.querySelector<HTMLDivElement>("#md-1-v");
-const mdBlockV2 = document.querySelector<HTMLDivElement>("#md-2-v");
-const mdBlockV3 = document.querySelector<HTMLDivElement>("#md-3-v");
-const mdBlockV4 = document.querySelector<HTMLDivElement>("#md-4-v");
-const smBlock1 = document.querySelector<HTMLDivElement>("#sm-1");
-const smBlock2 = document.querySelector<HTMLDivElement>("#sm-2");
-const smBlock3 = document.querySelector<HTMLDivElement>("#sm-3");
-const smBlock4 = document.querySelector<HTMLDivElement>("#sm-4");
-const emBlock1 = document.querySelector<HTMLDivElement>("#em-1");
-const emBlock2 = document.querySelector<HTMLDivElement>("#em-2");
+// Main container
+const container = document.querySelector<HTMLElement>(".container");
+
+// Top container
+const topContainer = document.querySelector<HTMLElement>(".top-container");
+const counter = document.querySelector<HTMLDivElement>(
+  ".top-container__counter"
+);
+const resetButton = document.querySelector<HTMLButtonElement>(
+  ".top-container__reset-btn"
+);
+const timer = document.querySelector<HTMLDivElement>(".top-container__timer");
+
+// Bottom container
+const bottomContainer =
+  document.querySelector<HTMLElement>(".bottom-container");
+const grid = document.querySelector<HTMLDivElement>(".bottom-container__grid");
+
+const generateGrid = (GRID_WIDTH: number, GRID_HEIGHT: number): Cell[][] => {
+  // y-axis array
+  const cells: Cell[][] = [];
+  for (let y = 0; y < GRID_HEIGHT; y++) {
+    // x-axis array
+    const row: Cell[] = [];
+    for (let x = 0; x < GRID_WIDTH; x++) {
+      // Creates new button element
+      const button = document.createElement("button");
+      // Assigns class "grid__btn" to new button element
+      button.classList.add("grid__btn");
+      // Appends new button element to grid div element
+      grid?.appendChild(button);
+      // Creates new Cell object
+      const cell: Cell = {
+        cellElement: button,
+        x_coord: x,
+        y_coord: y,
+        isHidden: true,
+        hasNumber: false,
+        hasFlag: false,
+        hasMine: false,
+        adjacentMines: 0,
+      };
+      // Pushes new Cell object to x-axis array
+      row.push(cell);
+    }
+    // Pushes x-axis array to y-axis array
+    cells.push(row);
+  }
+  // Returns two-dimensional array of Cell objects
+  return cells;
+};
+
+generateGrid(GRID_WIDTH, GRID_HEIGHT);

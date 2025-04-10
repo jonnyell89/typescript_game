@@ -7,21 +7,19 @@
     <title>TypeScript Game</title>
   </head>
   <body>
-    <h1>Minesweeper</h1>
-    <div class="container">
-      <div id="lg" class="container__block container__block--lg"></div>
-      <div id="md-1-h" class="container__block container__block--md"></div>
-      <div id="md-1-v" class="container__block container__block--md"></div>
-      <div id="md-2-v" class="container__block container__block--md"></div>
-      <div id="md-3-v" class="container__block container__block--md"></div>
-      <div id="md-4-v" class="container__block container__block--md"></div>
-      <div id="sm-1" class="container__block container__block--sm"></div>
-      <div id="sm-2" class="container__block container__block--sm"></div>
-      <div id="sm-3" class="container__block container__block--sm"></div>
-      <div id="sm-4" class="container__block container__block--sm"></div>
-      <div id="em-1" class="container__block container__block--em"></div>
-      <div id="em-2" class="container__block container__block--em"></div>
-    </div>
+    <header>
+      <h1>MINESWEEPER</h1>
+    </header>
+    <section class="container">
+      <div class="top-container">
+        <div class="top-container__counter"></div>
+        <button class="top-container__reset-btn"></button>
+        <div class="top-container__timer"></div>
+      </div>
+      <div class="bottom-container">
+        <div class="bottom-container__grid"></div>
+      </div>
+    </section>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
