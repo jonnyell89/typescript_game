@@ -81,10 +81,11 @@ const assignMines = (grid: Cell[][], MINE_COUNT: number) => {
     const xRandom = Math.floor(Math.random() * GRID_WIDTH);
     const yRandom = Math.floor(Math.random() * GRID_HEIGHT);
 
-    if (grid[yRandom][xRandom].hasMine === false) {
+    if (grid[yRandom][xRandom].hasMine) continue;
+    else {
       grid[yRandom][xRandom].hasMine = true;
       assignedMines = assignedMines + 1;
-    } else continue;
+    }
   }
 };
 
