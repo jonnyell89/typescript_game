@@ -140,21 +140,74 @@ A generateCell(x: number, y: number) function that generates Cell type objects.
 
     This function is called as a helper function to the generateGrid function.
 
-A generateGrid(GRID_WIDTH: number, GRID_HEIGHT: number) function to generate a two-dimensional list of Cell type objects, representing the minesweeper grid.
+A generateGrid(gridSize: number) function to generate a two-dimensional list of Cell type objects, representing the minesweeper grid.
 
 Input values are grid dimensions, set as global variables.
 
 Nested for loop:
 
-    Generates a two-dimensional array, representing the minesweeper grid.
+      Generates a two-dimensional array, representing the minesweeper grid.
 
-    Generates x and y coordinates.
+      Generates x and y coordinates.
 
-    Calls the generateCell helper function at every index position in the two-dimensional array.
+      Calls the generateCell helper function at every index position in the two-dimensional array.
 
-    Returns a two-dimensional array of Cell type objects, representing the minesweeper grid.
+Returns a two-dimensional array of Cell type objects, representing the minesweeper grid.
 
-A function that uses pseudo random numbers to generate grid coordinates for mine placements.
+An assignMines(grid: Cell[][], numberOfMines: number) function that uses pseudo random numbers to generate grid coordinates for mine placements.
+
+Input values are a two-dimensional array of Cell type objects, and the number of mines, set as a global variable.
+
+Initialise an assignedMine variable to track successful mine placements.
+
+While assignedMines less than numberOfMines:
+
+    Generate random cell coordinates:
+
+      If cell already contains a mine, continue.
+
+      Else, mine placement at that cell.
+
+      Increment assignedMines.
+
+Returns an array of successful mine placement grid coordinates.
+
+An assignNumbers(grid: Cell[][], mineCoordinates: {xCoord: number, yCoord: number}[]) function that assigns each cell a value by counting the number of adjacent mine placements for every cell. This means the surrounding eight cells for every central cell, the surrounding five cells for every edge cell, and the surrounding three cells for every corner cell.
+
+There are two options for this function:
+
+Iterate over the grid and count the number of adjacent mine placements for every cell. This involves counting all adjacent mine placements and incrementing the adjacentMines property for each individual Cell type object, before moving on to the next cell of the grid.
+
+Iterate over an array of mine placement coordinates and increment the adjacentMines property for each adjacent Cell type object directly. This involves incrementing the adjacentMines property of each adjacent Cell type object by 1, before moving on to the next mine placement in the array.
+
+I favour the more direct appraoch of iterating over an array of mine placement coordinates:
+
+Input values are a two-dimensional array of Cell type objects, representing the minesweeper grid, and an array of mine placement grid coordinates.
+
+For loop:
+
+    Iterate over the mineCoordinates array.
+
+    Access x and y coordinates for each mine placement and pass them into a helper function.
+
+An incrementAdjacentMines(grid: Cell[][], xCoord: number, yCoord: number) helper function that applies a single increment to the adjacentMines property for each Cell type object, immediately adjacent to the mine placement coordinate.
+
+This function requires several conditional statements to account for mine placements that occur at the edge of the grid, and for mine placements that occur in the corner of the grid.
+
+Central placements logic, for central mine placements:
+
+    If the x coordinate is greater than 0 and less than 8,
+      and if the y coordinate is greater than 0 and less than 8.
+
+    For loop:
+
+      Iterate over a 3x3 subgrid where the current mine placement cell is the central cell of the subgrid.
+
+      If hasMine property is true, continue.
+
+        This step is the logic that skips the central cell of the subgrid, and any other adjacent mine placements.
+
+      Else, increment adjacentMines property.
 
 A function that counts the number of adjacent mines and assigns that value to each cell in the grid.
 
