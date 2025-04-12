@@ -6,8 +6,8 @@ const MINE_COUNT = 10;
 
 type Cell = {
   cellElement: HTMLButtonElement;
-  yCoord: number;
-  xCoord: number;
+  rowIndex: number;
+  colIndex: number;
   isHidden: boolean;
   hasFlag: boolean;
   hasMine: boolean;
@@ -42,8 +42,8 @@ const generateCell = (y: number, x: number): Cell => {
   // Creates new Cell object
   return {
     cellElement: button,
-    yCoord: y,
-    xCoord: x,
+    rowIndex: y,
+    colIndex: x,
     isHidden: true,
     hasFlag: false,
     hasMine: false,
@@ -84,7 +84,7 @@ const assignMines = (grid: Cell[][], numberOfMines: number) => {
     else {
       grid[yRandom][xRandom].hasMine = true;
       // Defines mine coordinates as inline object literals and pushes them to the mineCoordinates array
-      mineCoordinates.push({ yCoord: yRandom, xCoord: xRandom });
+      mineCoordinates.push({ rowIndex: yRandom, colIndex: xRandom });
       assignedMines++;
     }
   }
@@ -100,15 +100,15 @@ console.log(mineCoordinates);
 
 const centralAdjacentCells = (
   grid: Cell[][],
-  yCoord: number,
-  xCoord: number
+  rowIndex: number,
+  colIndex: number
 ) => {
   let incrementationCount = 0; // Debugging
   // Iterates over a 3x3 subgrid with the given coordinate at the central cell
   for (let y = -1; y <= 1; y++) {
     for (let x = -1; x <= 1; x++) {
-      const ySubgrid = yCoord + y;
-      const xSubgrid = xCoord + x;
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
       if (grid[ySubgrid][xSubgrid].hasMine) continue;
       else {
         grid[ySubgrid][xSubgrid].adjacentMines++;
@@ -122,15 +122,15 @@ const centralAdjacentCells = (
 
 const topLeftCornerAdjacentCells = (
   grid: Cell[][],
-  yCoord: number,
-  xCoord: number
+  rowIndex: number,
+  colIndex: number
 ) => {
   let incrementationCount = 0; // Debugging
   // Iterates over a 2x2 subgrid with the given coordinate at the top left cell
-  for (let y = 0; y < 2; y++) {
-    for (let x = 0; x < 2; x++) {
-      const ySubgrid = yCoord + y;
-      const xSubgrid = xCoord + x;
+  for (let y = 0; y <= 1; y++) {
+    for (let x = 0; x <= 1; x++) {
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
       if (grid[ySubgrid][xSubgrid].hasMine) continue;
       else {
         grid[ySubgrid][xSubgrid].adjacentMines++;
@@ -144,15 +144,15 @@ const topLeftCornerAdjacentCells = (
 
 const topRightCornerAdjacentCells = (
   grid: Cell[][],
-  yCoord: number,
-  xCoord: number
+  rowIndex: number,
+  colIndex: number
 ) => {
   let incrementationCount = 0; // Debugging
   // Iterates over a 2x2 subgrid with the given coordinate at the top right cell
-  for (let y = -1; y < 1; y++) {
-    for (let x = 0; x < 2; x++) {
-      const ySubgrid = yCoord + y;
-      const xSubgrid = xCoord + x;
+  for (let y = 0; y <= 1; y++) {
+    for (let x = -1; x <= 0; x++) {
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
       if (grid[ySubgrid][xSubgrid].hasMine) continue;
       else {
         grid[ySubgrid][xSubgrid].adjacentMines++;
@@ -166,15 +166,15 @@ const topRightCornerAdjacentCells = (
 
 const bottomRightCornerAdjacentCells = (
   grid: Cell[][],
-  yCoord: number,
-  xCoord: number
+  rowIndex: number,
+  colIndex: number
 ) => {
   let incrementationCount = 0; // Debugging
   // Iterates over a 2x2 subgrid with the given coordinate at the bottom right cell
-  for (let y = -1; y < 1; y++) {
-    for (let x = -1; x < 1; x++) {
-      const ySubgrid = yCoord + y;
-      const xSubgrid = xCoord + x;
+  for (let y = -1; y <= 0; y++) {
+    for (let x = -1; x <= 0; x++) {
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
       if (grid[ySubgrid][xSubgrid].hasMine) continue;
       else {
         grid[ySubgrid][xSubgrid].adjacentMines++;
@@ -188,15 +188,15 @@ const bottomRightCornerAdjacentCells = (
 
 const bottomLeftCornerAdjacentCells = (
   grid: Cell[][],
-  yCoord: number,
-  xCoord: number
+  rowIndex: number,
+  colIndex: number
 ) => {
   let incrementationCount = 0; // Debugging
   // Iterates over a 2x2 subgrid with the given coordinate at the bottom left cell
-  for (let y = 0; y < 2; y++) {
-    for (let x = -1; x < 1; x++) {
-      const ySubgrid = yCoord + y;
-      const xSubgrid = xCoord + x;
+  for (let y = -1; y <= 0; y++) {
+    for (let x = 0; x <= 1; x++) {
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
       if (grid[ySubgrid][xSubgrid].hasMine) continue;
       else {
         grid[ySubgrid][xSubgrid].adjacentMines++;
@@ -208,32 +208,136 @@ const bottomLeftCornerAdjacentCells = (
   console.log(`Incrementations in bottom-left corner: ${incrementationCount}`); // Debugging
 };
 
+const topEdgeAdjacentCells = (
+  grid: Cell[][],
+  rowIndex: number,
+  colIndex: number
+) => {
+  let incrementationCount = 0; // Debugging
+  // Iterates over a 2x3 subgrid with the given coordinate at the top-centre cell
+  for (let y = 0; y <= 1; y++) {
+    for (let x = -1; x <= 1; x++) {
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
+      if (grid[ySubgrid][xSubgrid].hasMine) continue;
+      else {
+        grid[ySubgrid][xSubgrid].adjacentMines++;
+        incrementationCount++; // Debugging
+        console.log(`Top-edge: (${ySubgrid}, ${xSubgrid})`);
+      }
+    }
+  }
+  console.log(`Incrementations in top-edge: ${incrementationCount}`); // Debugging
+};
+
+const rightEdgeAdjacentCells = (
+  grid: Cell[][],
+  rowIndex: number,
+  colIndex: number
+) => {
+  let incrementationCount = 0; // Debugging
+  // Iterates over a 3x2 subgrid with the given coordinate at the right-centre cell
+  for (let y = -1; y <= 1; y++) {
+    for (let x = -1; x <= 0; x++) {
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
+      if (grid[ySubgrid][xSubgrid].hasMine) continue;
+      else {
+        grid[ySubgrid][xSubgrid].adjacentMines++;
+        incrementationCount++; // Debugging
+        console.log(`Rigth-edge: (${ySubgrid}, ${xSubgrid})`);
+      }
+    }
+  }
+  console.log(`Incrementations in right-edge: ${incrementationCount}`); // Debugging
+};
+
+const bottomEdgeAdjacentCells = (
+  grid: Cell[][],
+  rowIndex: number,
+  colIndex: number
+) => {
+  let incrementationCount = 0; // Debugging
+  // Iterates over a 2x3 subgrid with the given coordinate at the bottom-centre cell
+  for (let y = -1; y <= 0; y++) {
+    for (let x = -1; x <= 1; x++) {
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
+      if (grid[ySubgrid][xSubgrid].hasMine) continue;
+      else {
+        grid[ySubgrid][xSubgrid].adjacentMines++;
+        incrementationCount++; // Debugging
+        console.log(`Bottom-edge: (${ySubgrid}, ${xSubgrid})`);
+      }
+    }
+  }
+  console.log(`Incrementations in bottom-edge: ${incrementationCount}`); // Debugging
+};
+
+const leftEdgeAdjacentCells = (
+  grid: Cell[][],
+  rowIndex: number,
+  colIndex: number
+) => {
+  let incrementationCount = 0; // Debugging
+  // Iterates over a 3x2 subgrid with the given coordinate at the left-centre cell
+  for (let y = -1; y <= 1; y++) {
+    for (let x = 0; x <= 1; x++) {
+      const ySubgrid = rowIndex + y;
+      const xSubgrid = colIndex + x;
+      if (grid[ySubgrid][xSubgrid].hasMine) continue;
+      else {
+        grid[ySubgrid][xSubgrid].adjacentMines++;
+        incrementationCount++; // Debugging
+        console.log(`Left-edge: (${ySubgrid}, ${xSubgrid})`);
+      }
+    }
+  }
+  console.log(`Incrementations in left-edge: ${incrementationCount}`); // Debugging
+};
+
 const assignNumbers = (
   grid: Cell[][],
-  mineCoordinates: { yCoord: number; xCoord: number }[]
+  mineCoordinates: { rowIndex: number; colIndex: number }[]
 ) => {
   for (let i = 0; i < mineCoordinates.length; i++) {
-    const x = mineCoordinates[i].xCoord;
-    const y = mineCoordinates[i].yCoord;
+    const y = mineCoordinates[i].rowIndex;
+    const x = mineCoordinates[i].colIndex;
     // Ensures the cell is not an edge or corner case
     if (y > 0 && y < grid.length - 1 && x > 0 && x < grid.length - 1) {
       centralAdjacentCells(grid, y, x);
     }
     // (0, 0)
-    else if (y === 0 && x === 0) {
+    if (y === 0 && x === 0) {
       topLeftCornerAdjacentCells(grid, y, x);
     }
-    // (8, 0)
-    else if (y === grid.length - 1 && x === 0) {
+    // (0, 8)
+    if (y === 0 && x === grid.length - 1) {
       topRightCornerAdjacentCells(grid, y, x);
     }
     // (8, 8)
-    else if (y === grid.length - 1 && x === grid.length - 1) {
+    if (y === grid.length - 1 && x === grid.length - 1) {
       bottomRightCornerAdjacentCells(grid, y, x);
     }
-    // (0, 8)
-    else if (y === 0 && x === grid.length - 1) {
+    // (8, 0)
+    if (y === grid.length - 1 && x === 0) {
       bottomLeftCornerAdjacentCells(grid, y, x);
+    }
+    // (0, _)
+    if (y === 0 && x > 0 && x < grid.length - 1) {
+      topEdgeAdjacentCells(grid, y, x);
+    }
+    // (_, 8)
+    if (y > 0 && y < grid.length - 1 && x === grid.length - 1) {
+      rightEdgeAdjacentCells(grid, y, x);
+    }
+    // (8, _)
+    if (y === grid.length - 1 && x > 0 && x < grid.length - 1) {
+      bottomEdgeAdjacentCells(grid, y, x);
+    }
+    // (_, 0)
+    if (y > 0 && y < grid.length - 1 && x === 0) {
+      leftEdgeAdjacentCells(grid, y, x);
     }
   }
 };
@@ -241,3 +345,33 @@ const assignNumbers = (
 const assignedNumbers = assignNumbers(minesweeperGrid, mineCoordinates);
 
 console.log(minesweeperGrid);
+
+for (let row of minesweeperGrid) {
+  for (let cell of row) {
+    if (cell.hasMine) {
+      cell.cellElement.setAttribute("style", "background-color: #bc171a;");
+    }
+  }
+}
+
+for (let row of minesweeperGrid) {
+  for (let cell of row) {
+    if (cell.adjacentMines === 1) {
+      cell.cellElement.setAttribute("style", "background-color: blue;");
+    } else if (cell.adjacentMines === 2) {
+      cell.cellElement.setAttribute("style", "background-color: green;");
+    } else if (cell.adjacentMines === 3) {
+      cell.cellElement.setAttribute("style", "background-color: yellow;");
+    } else if (cell.adjacentMines === 4) {
+      cell.cellElement.setAttribute("style", "background-color: purple;");
+    } else if (cell.adjacentMines === 5) {
+      cell.cellElement.setAttribute("style", "background-color: orangered;");
+    } else if (cell.adjacentMines === 6) {
+      cell.cellElement.setAttribute("style", "background-color: red;");
+    } else if (cell.adjacentMines === 7) {
+      cell.cellElement.setAttribute("style", "background-color: orange;");
+    } else if (cell.adjacentMines === 8) {
+      cell.cellElement.setAttribute("style", "background-color: black;");
+    }
+  }
+}
