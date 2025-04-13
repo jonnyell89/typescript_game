@@ -5,15 +5,18 @@ import {
   generateGrid,
   assignMines,
   assignNumbers,
-  centralAdjacentCells,
-  topLeftCornerAdjacentCells,
-  topRightCornerAdjacentCells,
-  bottomRightCornerAdjacentCells,
-  bottomLeftCornerAdjacentCells,
-  topEdgeAdjacentCells,
-  rightEdgeAdjacentCells,
-  bottomEdgeAdjacentCells,
-  leftEdgeAdjacentCells,
+  // centralAdjacentCells,
+  // topLeftCornerAdjacentCells,
+  // topRightCornerAdjacentCells,
+  // bottomRightCornerAdjacentCells,
+  // bottomLeftCornerAdjacentCells,
+  // topEdgeAdjacentCells,
+  // rightEdgeAdjacentCells,
+  // bottomEdgeAdjacentCells,
+  // leftEdgeAdjacentCells,
+  incrementAdjacentCells,
+  revealCell,
+  revealCells,
 } from "./utils";
 // npm run dev
 
@@ -35,6 +38,10 @@ const bottomContainer =
   document.querySelector<HTMLElement>(".bottom-container");
 const grid = document.querySelector<HTMLDivElement>(".bottom-container__grid");
 
+if (!grid) {
+  throw new Error("The 'grid' element has not been found.");
+}
+
 // Game Logic
 const minesweeperGrid = generateGrid(grid, GRID_SIZE);
 const mineCoordinates = assignMines(minesweeperGrid, MINE_COUNT);
@@ -44,30 +51,41 @@ let gameBegins = false;
 
 for (let row of minesweeperGrid) {
   for (let cell of row) {
+    cell.cellElement.addEventListener("click", () => {
+      if (!gameBegins) {
+        gameBegins = true;
+      }
+      revealCells(minesweeperGrid, cell.rowIndex, cell.colIndex);
+    });
+  }
+}
+
+for (let row of minesweeperGrid) {
+  for (let cell of row) {
     if (cell.hasMine) {
       cell.cellElement.setAttribute("style", "background-color: #bc171a;");
     }
   }
 }
 
-for (let row of minesweeperGrid) {
-  for (let cell of row) {
-    if (cell.adjacentMines === 1) {
-      cell.cellElement.setAttribute("style", "background-color: blue;");
-    } else if (cell.adjacentMines === 2) {
-      cell.cellElement.setAttribute("style", "background-color: green;");
-    } else if (cell.adjacentMines === 3) {
-      cell.cellElement.setAttribute("style", "background-color: yellow;");
-    } else if (cell.adjacentMines === 4) {
-      cell.cellElement.setAttribute("style", "background-color: purple;");
-    } else if (cell.adjacentMines === 5) {
-      cell.cellElement.setAttribute("style", "background-color: orangered;");
-    } else if (cell.adjacentMines === 6) {
-      cell.cellElement.setAttribute("style", "background-color: red;");
-    } else if (cell.adjacentMines === 7) {
-      cell.cellElement.setAttribute("style", "background-color: orange;");
-    } else if (cell.adjacentMines === 8) {
-      cell.cellElement.setAttribute("style", "background-color: black;");
-    }
-  }
-}
+// for (let row of minesweeperGrid) {
+//   for (let cell of row) {
+//     if (cell.adjacentMines === 1) {
+//       cell.cellElement.setAttribute("style", "background-color: blue;");
+//     } else if (cell.adjacentMines === 2) {
+//       cell.cellElement.setAttribute("style", "background-color: green;");
+//     } else if (cell.adjacentMines === 3) {
+//       cell.cellElement.setAttribute("style", "background-color: yellow;");
+//     } else if (cell.adjacentMines === 4) {
+//       cell.cellElement.setAttribute("style", "background-color: purple;");
+//     } else if (cell.adjacentMines === 5) {
+//       cell.cellElement.setAttribute("style", "background-color: orangered;");
+//     } else if (cell.adjacentMines === 6) {
+//       cell.cellElement.setAttribute("style", "background-color: red;");
+//     } else if (cell.adjacentMines === 7) {
+//       cell.cellElement.setAttribute("style", "background-color: orange;");
+//     } else if (cell.adjacentMines === 8) {
+//       cell.cellElement.setAttribute("style", "background-color: black;");
+//     }
+//   }
+// }
