@@ -109,9 +109,7 @@ Minesweeper is a logic puzzle game. The game features a grid of cells that conta
 
 Global variables:
 
-GRID_WIDTH = 9
-GRID_HEIGHT = 9
-MINE_COUNT = 10
+GRID_WIDTH = 9 GRID_HEIGHT = 9 MINE_COUNT = 10
 
 Requirements:
 
@@ -125,7 +123,6 @@ Each cell of the grid is to be a Cell type object, containing all necessary info
     xCoord: number;
     yCoord: number;
     isHidden: boolean;
-    hasNumber: boolean;
     hasFlag: boolean;
     hasMine: boolean;
     adjacentMines: number;
