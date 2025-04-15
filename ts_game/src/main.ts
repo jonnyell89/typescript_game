@@ -38,8 +38,19 @@ const bottomContainer =
   document.querySelector<HTMLElement>(".bottom-container");
 const grid = document.querySelector<HTMLDivElement>(".bottom-container__grid");
 
+if (
+  !container ||
+  !topContainer ||
+  !counter ||
+  !resetButton ||
+  !timer ||
+  !bottomContainer
+) {
+  throw new Error("The Minesweeper GUI has failed to load.");
+}
+
 if (!grid) {
-  throw new Error("The 'grid' element has not been found.");
+  throw new Error("The 'grid' element has failed to load.");
 }
 
 // Game Logic
@@ -63,29 +74,32 @@ for (let row of minesweeperGrid) {
 for (let row of minesweeperGrid) {
   for (let cell of row) {
     if (cell.hasMine) {
-      cell.cellElement.setAttribute("style", "background-color: #bc171a;");
+      cell.cellElement.textContent = "💣";
+      cell.cellElement.style.color = "black";
     }
   }
 }
 
+resetButton.textContent = "😀";
+
 // for (let row of minesweeperGrid) {
 //   for (let cell of row) {
 //     if (cell.adjacentMines === 1) {
-//       cell.cellElement.setAttribute("style", "background-color: blue;");
+//       cell.cellElement.setAttribute("style", "background-color: #0000ff;");
 //     } else if (cell.adjacentMines === 2) {
-//       cell.cellElement.setAttribute("style", "background-color: green;");
+//       cell.cellElement.setAttribute("style", "background-color: #008200;");
 //     } else if (cell.adjacentMines === 3) {
-//       cell.cellElement.setAttribute("style", "background-color: yellow;");
+//       cell.cellElement.setAttribute("style", "background-color: #ff0000;");
 //     } else if (cell.adjacentMines === 4) {
-//       cell.cellElement.setAttribute("style", "background-color: purple;");
+//       cell.cellElement.setAttribute("style", "background-color: #000084;");
 //     } else if (cell.adjacentMines === 5) {
-//       cell.cellElement.setAttribute("style", "background-color: orangered;");
+//       cell.cellElement.setAttribute("style", "background-color: #840000;");
 //     } else if (cell.adjacentMines === 6) {
-//       cell.cellElement.setAttribute("style", "background-color: red;");
+//       cell.cellElement.setAttribute("style", "background-color: #008284;");
 //     } else if (cell.adjacentMines === 7) {
-//       cell.cellElement.setAttribute("style", "background-color: orange;");
+//       cell.cellElement.setAttribute("style", "background-color: #840084;");
 //     } else if (cell.adjacentMines === 8) {
-//       cell.cellElement.setAttribute("style", "background-color: black;");
+//       cell.cellElement.setAttribute("style", "background-color: #757575;");
 //     }
 //   }
 // }

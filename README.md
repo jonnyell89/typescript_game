@@ -187,7 +187,7 @@ For loop:
 
     Access x and y coordinates for each mine placement and pass them into a helper function.
 
-An incrementAdjacentMines(grid: Cell[][], xCoord: number, yCoord: number) helper function that applies a single increment to the adjacentMines property for each Cell type object, immediately adjacent to the mine placement coordinate.
+An centralAdjacentCells(grid: Cell[][], xCoord: number, yCoord: number) helper function that applies a single increment to the adjacentMines property for each Cell type object, immediately adjacent to the mine placement coordinate.
 
 This function requires several conditional statements to account for mine placements that occur at the edge of the grid, and for mine placements that occur in the corner of the grid.
 

@@ -83,6 +83,12 @@ header {
 
     width: 66px;
     height: 66px;
+
+    font-size: xx-large;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &__timer {
@@ -124,9 +130,23 @@ header {
   border-right: 5px solid #242a32;
   border-bottom: 5px solid #242a32;
   border-left: 5px solid #727880;
+
+  width: 40px;
+  height: 40px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: x-large;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .grid__btn:hover {
   filter: brightness(1.2);
   transition: filter 0.2s;
 }
+
+/* revealed cell: #384048;
+   mine backgroudn: #ee6666; */
