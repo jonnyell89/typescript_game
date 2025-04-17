@@ -13,15 +13,25 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 header {
   display: flex;
   justify-content: center;
   align-items: center;
 
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 25px;
+  color: whitesmoke;
 
   width: 400px;
-  height: 100px;
+  height: 50px;
+  padding-top: 30px;
 }
 
 .container {
@@ -30,10 +40,10 @@ header {
   justify-content: center;
   align-items: center;
   grid-template-columns: repeat(4, 1fr);
-  row-gap: 21px;
+  row-gap: 13px;
 
-  width: 388px;
-  height: 500px;
+  width: 367px;
+  height: 475px;
   margin: 30px;
   padding: 20px;
 
@@ -50,8 +60,9 @@ header {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-left: 10px;
-  padding-right: 10px;
+  // padding-left: 10px;
+  // padding-right: 10px;
+  padding: 10px;
 
   background-color: #464c54;
   border-radius: 2px;
@@ -63,6 +74,9 @@ header {
   width: 347px;
   height: 90px;
 
+  // box-sizing: border-box;
+  // overflow: hidden;
+
   &__counter {
     background-color: #bc171a;
     border-top: 3px solid #20262e;
@@ -70,8 +84,8 @@ header {
     border-bottom: 3px solid #5b6067;
     border-left: 3px solid #20262e;
 
-    width: 90px;
-    height: 65px;
+    width: 83px;
+    height: 53px;
   }
 
   &__reset-btn {
@@ -81,8 +95,8 @@ header {
     border-bottom: 7px solid #20262e;
     border-left: 7px solid #7a8088;
 
-    width: 66px;
-    height: 66px;
+    width: 57px;
+    height: 57px;
 
     font-size: xx-large;
 
@@ -98,8 +112,8 @@ header {
     border-bottom: 3px solid #5b6067;
     border-left: 3px solid #20262e;
 
-    width: 90px;
-    height: 65px;
+    width: 83px;
+    height: 53px;
   }
 }
 
@@ -147,6 +161,3 @@ header {
   filter: brightness(1.2);
   transition: filter 0.2s;
 }
-
-/* revealed cell: #384048;
-   mine backgroudn: #ee6666; */

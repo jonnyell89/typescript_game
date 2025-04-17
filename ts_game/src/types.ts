@@ -7,3 +7,8 @@ export type Cell = {
   hasMine: boolean;
   adjacentMines: number;
 };
+
+export type MineCoordinate = {
+  rowIndex: number;
+  colIndex: number;
+};

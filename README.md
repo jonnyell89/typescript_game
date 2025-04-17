@@ -22,44 +22,43 @@ Minesweeper is a logic puzzle game. The game features a grid of cells that conta
 
         - [x] Buttons
 
-          - [] Empty cells
-          - [ ] Cells containing a reference to the number of adjacent mines.
-          - [ ] 10 cells containing mines.
+          - [x] Empty cells
+          - [x] Cells containing a reference to the number of adjacent mines.
+          - [x] 10 cells containing mines.
 
 # SCSS
 
-- [ ] Responsive Design
+- [x] Responsive Design
 
-  - [ ] Mobile-first design
-  - [ ] Rescale for different screen dimensions.
+  - [x] Mobile-first design
+  - [x] Rescale for different screen dimensions.
 
-- [ ] GUI
+- [x] GUI
 
-  - [ ] All cells start hidden from the user.
+  - [x] All cells start hidden from the user.
 
-  - [ ] Cell types:
+  - [x] Cell types:
 
-    - [ ] Empty cells contain no value, but are connected to all adjacent empty cells.
+    - [x] Empty cells contain no value, but are connected to all adjacent empty cells.
 
-    - [ ] Cells containing reference numbers:
+    - [x] Cells containing reference numbers:
 
-      - [ ] 1: Blue
-      - [ ] 2: Green
-      - [ ] 3: Yellow
-      - [ ] 4: Purple
-      - [ ] 5: Light Red
-      - [ ] 6: Dark Red
-      - [ ] 7: Orange
-      - [ ] 8: Black
+      - [x] 1: Blue
+      - [x] 2: Green
+      - [x] 3: Yellow
+      - [x] 4: Purple
+      - [x] 5: Light Red
+      - [x] 6: Dark Red
+      - [x] 7: Orange
+      - [x] 8: Black
 
-    - [ ] Cells containing mines:
+    - [x] Cells containing mines:
 
-      - [ ] Mine: Red
-      - [ ] Remaining mines: Black.
+      - [x] Mine: Bomb emoji
 
-  - [ ] Button hover feedback
+  - [x] Button hover feedback
 
-  - [ ] Grid interaction disables when the game is won or lost.
+  - [x] Grid interaction disables when the game is won or lost.
 
 # TypeScript
 
@@ -205,6 +204,14 @@ Central placements logic, for central mine placements:
         This step is the logic that skips the central cell of the subgrid, and any other adjacent mine placements.
 
       Else, increment adjacentMines property.
+
+This function and the series of associated functions have now been generalised into an incrementAdjacentCells(grid: Cell[][], rowIndex: number, colIndex: number) function. The key piece of logic that enabled this refactor was a general boundary check that prevented out of bounds errors when incrementing adjacentMines properties for edge and corner cases.
+
+The repeated logic for all nine edge and corner cases now exists in the archive.ts file.
+
+A revealCells(grid: Cell[][], y: number, x: number) recursive algorithm that reveals Cell type objects when the user selects a cell on the minesweeper grid. The function must reveal all connected Cell type objects with an adjacentMines property of zero. This action also includes revealing all adjacent Cell type objects with an adjacentMines property of greater than zero. The function must also reveal single Cell type objects that have an adjacentMines property of greater than zero. And finally, the function must also trigger a game over condition when the user selects a Cell type object that contains a mine.
+
+The logic for the recursive algorithm has been adapted from the following source: https://stackoverflow.com/questions/44554985/i-cant-figure-out-the-minesweeper-recursive-algorithm
 
 A function that counts the number of adjacent mines and assigns that value to each cell in the grid.
 

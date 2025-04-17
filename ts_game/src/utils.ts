@@ -1,4 +1,4 @@
-import { Cell } from "./types";
+import { Cell, MineCoordinate } from "./types";
 
 export const generateCell = (
   gridElement: HTMLDivElement,
@@ -28,7 +28,7 @@ export const generateGrid = (
   gridSize: number
 ): Cell[][] => {
   // y-axis array
-  const minesweeperGrid: Cell[][] = [];
+  const grid: Cell[][] = [];
   for (let y = 0; y < gridSize; y++) {
     // x-axis array
     const row: Cell[] = [];
@@ -39,14 +39,17 @@ export const generateGrid = (
       row.push(cell);
     }
     // Pushes x-axis array to y-axis array
-    minesweeperGrid.push(row);
+    grid.push(row);
   }
   // Returns two-dimensional array of Cell objects
-  return minesweeperGrid;
+  return grid;
 };
 
-export const assignMines = (grid: Cell[][], numberOfMines: number) => {
-  const mineCoordinates = [];
+export const assignMines = (
+  grid: Cell[][],
+  numberOfMines: number
+): MineCoordinate[] => {
+  const mineCoordinates: MineCoordinate[] = [];
   let assignedMines = 0;
 
   while (assignedMines < numberOfMines) {
@@ -57,19 +60,19 @@ export const assignMines = (grid: Cell[][], numberOfMines: number) => {
     if (grid[yRandom][xRandom].hasMine) continue;
     else {
       grid[yRandom][xRandom].hasMine = true;
-      // Defines mine coordinates as inline object literals and pushes them to the mineCoordinates array
+      // Defines MineCoordinate objects and pushes them to the mineCoordinates array
       mineCoordinates.push({ rowIndex: yRandom, colIndex: xRandom });
       assignedMines++;
     }
   }
-  // Returns an array of mine placement coordinates
+  // Returns an array of MineCoordinate objects
   return mineCoordinates;
 };
 
 export const assignNumbers = (
   grid: Cell[][],
   mineCoordinates: { rowIndex: number; colIndex: number }[]
-) => {
+): Cell[][] => {
   for (let i = 0; i < mineCoordinates.length; i++) {
     // Accesses each mine placement coordinate
     const y = mineCoordinates[i].rowIndex;
@@ -77,6 +80,8 @@ export const assignNumbers = (
     // Calls helper function
     incrementAdjacentCells(grid, y, x);
   }
+  // Returns the modified two-dimensional array of Cell objects
+  return grid;
 };
 
 // DRY general function for incrementing adjacentMines property
@@ -108,15 +113,16 @@ export const incrementAdjacentCells = (
 export const revealCells = (grid: Cell[][], y: number, x: number) => {
   // Returns if y or x are out of bounds
   if (y < 0 || y >= grid.length || x < 0 || x >= grid.length) return;
-  // Returns if the Cell type object has already been revealed
+  // Returns if the Cell object has already been revealed
   if (!grid[y][x].isHidden) return;
-  // Returns if the Cell type object has a mine
+  // Returns if the Cell object has a mine
+  // END GAME CONDITION MET
   if (grid[y][x].hasMine) return;
-  // Ensures that only the current Cell type object is revealed if it has one or more adjacent mines.
-  if (grid[y][x].adjacentMines > 0) return revealCell(grid[y][x]);
-  // Calls itself recursively, revealing all connected Cell type objects.
+  // Ensures that only the current Cell object is revealed if it has one or more adjacent mines.
+  if (grid[y][x].adjacentMines > 0) return revealCell(grid, y, x);
+  // Calls itself recursively, revealing all connected Cell objects.
   else if (!grid[y][x].hasMine && grid[y][x].isHidden) {
-    revealCell(grid[y][x]);
+    revealCell(grid, y, x);
     revealCells(grid, y - 1, x - 1);
     revealCells(grid, y - 1, x);
     revealCells(grid, y - 1, x + 1);
@@ -128,45 +134,76 @@ export const revealCells = (grid: Cell[][], y: number, x: number) => {
   }
 };
 
-export const revealCell = (cell: Cell) => {
-  if (cell.isHidden) {
-    cell.isHidden = false;
+export const revealCell = (grid: Cell[][], y: number, x: number) => {
+  if (grid[y][x].isHidden) {
+    grid[y][x].isHidden = false;
     // Adjusts styling of pressed buttons
-    cell.cellElement.style.backgroundColor = "#384048";
-    cell.cellElement.style.borderTop = "none";
-    cell.cellElement.style.borderRight = "none";
-    cell.cellElement.style.borderBottom = "none";
-    cell.cellElement.style.borderLeft = "none";
+    grid[y][x].cellElement.style.backgroundColor = "#384048";
+    grid[y][x].cellElement.style.borderTop = "none";
+    grid[y][x].cellElement.style.borderRight = "none";
+    grid[y][x].cellElement.style.borderBottom = "none";
+    grid[y][x].cellElement.style.borderLeft = "none";
 
-    if (cell.hasMine) {
-      cell.cellElement.textContent = "💣";
-      cell.cellElement.style.color = "black";
+    if (grid[y][x].hasMine) {
+      grid[y][x].cellElement.textContent = "💣";
+      grid[y][x].cellElement.style.color = "black";
     }
 
-    if (cell.adjacentMines === 1) {
-      cell.cellElement.textContent = `${cell.adjacentMines}`;
-      cell.cellElement.style.color = "#0000ff";
-    } else if (cell.adjacentMines === 2) {
-      cell.cellElement.textContent = `${cell.adjacentMines}`;
-      cell.cellElement.style.color = "#008200";
-    } else if (cell.adjacentMines === 3) {
-      cell.cellElement.textContent = `${cell.adjacentMines}`;
-      cell.cellElement.style.color = "#ff0000";
-    } else if (cell.adjacentMines === 4) {
-      cell.cellElement.textContent = `${cell.adjacentMines}`;
-      cell.cellElement.style.color = "#000084";
-    } else if (cell.adjacentMines === 5) {
-      cell.cellElement.textContent = `${cell.adjacentMines}`;
-      cell.cellElement.style.color = "#840000";
-    } else if (cell.adjacentMines === 6) {
-      cell.cellElement.textContent = `${cell.adjacentMines}`;
-      cell.cellElement.style.color = "#008284";
-    } else if (cell.adjacentMines === 7) {
-      cell.cellElement.textContent = `${cell.adjacentMines}`;
-      cell.cellElement.style.color = "#840084";
-    } else if (cell.adjacentMines === 8) {
-      cell.cellElement.textContent = `${cell.adjacentMines}`;
-      cell.cellElement.style.color = "#757575";
+    if (grid[y][x].adjacentMines === 1) {
+      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
+      grid[y][x].cellElement.style.color = "#0000ff";
+    } else if (grid[y][x].adjacentMines === 2) {
+      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
+      grid[y][x].cellElement.style.color = "#008200";
+    } else if (grid[y][x].adjacentMines === 3) {
+      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
+      grid[y][x].cellElement.style.color = "#ff0000";
+    } else if (grid[y][x].adjacentMines === 4) {
+      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
+      grid[y][x].cellElement.style.color = "#000084";
+    } else if (grid[y][x].adjacentMines === 5) {
+      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
+      grid[y][x].cellElement.style.color = "#840000";
+    } else if (grid[y][x].adjacentMines === 6) {
+      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
+      grid[y][x].cellElement.style.color = "#008284";
+    } else if (grid[y][x].adjacentMines === 7) {
+      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
+      grid[y][x].cellElement.style.color = "#840084";
+    } else if (grid[y][x].adjacentMines === 8) {
+      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
+      grid[y][x].cellElement.style.color = "#757575";
     }
   }
 };
+
+export const revealMines = (
+  grid: Cell[][],
+  mineCoordinates: MineCoordinate[]
+) => {
+  for (let i = 0; i < mineCoordinates.length; i++) {
+    // Accesses each mine placement coordinate
+    const y = mineCoordinates[i].rowIndex;
+    const x = mineCoordinates[i].colIndex;
+    if (!grid[y][x].isHidden) continue;
+    else {
+      revealCell(grid, y, x);
+    }
+  }
+};
+
+export const plantFlag = (grid: Cell[][], y: number, x: number) => {
+  if (grid[y][x].isHidden) {
+    if (!grid[y][x].hasFlag) {
+      grid[y][x].hasFlag = true;
+      grid[y][x].cellElement.textContent = "🚩";
+    } else {
+      grid[y][x].hasFlag = false;
+      grid[y][x].cellElement.innerHTML = "";
+    }
+  } else return;
+};
+
+// export const pressReset = () => {
+
+// }

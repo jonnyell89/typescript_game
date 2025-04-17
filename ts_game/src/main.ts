@@ -5,18 +5,11 @@ import {
   generateGrid,
   assignMines,
   assignNumbers,
-  // centralAdjacentCells,
-  // topLeftCornerAdjacentCells,
-  // topRightCornerAdjacentCells,
-  // bottomRightCornerAdjacentCells,
-  // bottomLeftCornerAdjacentCells,
-  // topEdgeAdjacentCells,
-  // rightEdgeAdjacentCells,
-  // bottomEdgeAdjacentCells,
-  // leftEdgeAdjacentCells,
   incrementAdjacentCells,
   revealCell,
   revealCells,
+  revealMines,
+  plantFlag,
 } from "./utils";
 // npm run dev
 
@@ -49,57 +42,70 @@ if (
   throw new Error("The Minesweeper GUI has failed to load.");
 }
 
-if (!grid) {
-  throw new Error("The 'grid' element has failed to load.");
-}
-
 // Game Logic
-const minesweeperGrid = generateGrid(grid, GRID_SIZE);
-const mineCoordinates = assignMines(minesweeperGrid, MINE_COUNT);
-const assignedNumbers = assignNumbers(minesweeperGrid, mineCoordinates);
-
 let gameBegins = false;
+let gameEnds = false;
 
-for (let row of minesweeperGrid) {
-  for (let cell of row) {
-    cell.cellElement.addEventListener("click", () => {
-      if (!gameBegins) {
-        gameBegins = true;
-      }
-      revealCells(minesweeperGrid, cell.rowIndex, cell.colIndex);
-    });
+const startGame = () => {
+  if (!grid) {
+    throw new Error("The 'grid' element has failed to load.");
   }
-}
 
-for (let row of minesweeperGrid) {
-  for (let cell of row) {
-    if (cell.hasMine) {
-      cell.cellElement.textContent = "💣";
-      cell.cellElement.style.color = "black";
+  gameBegins = false;
+  gameEnds = false;
+
+  resetButton.textContent = "🙂";
+
+  // Resets the grid element
+  grid.innerHTML = "";
+  // Generates a two-dimensional array of Cell objects
+  const cellMatrix = generateGrid(grid, GRID_SIZE);
+  // Generates an array of MineCoordinate objects
+  const mineCoordinates = assignMines(cellMatrix, MINE_COUNT);
+  // Modifies hasMine and adjacentMines Cell object properties
+  const minesweeperGrid = assignNumbers(cellMatrix, mineCoordinates);
+
+  for (let y = 0; y < minesweeperGrid.length; ++y) {
+    for (let x = 0; x < minesweeperGrid.length; ++x) {
+      // Adds an event listener to every button in the grid
+      minesweeperGrid[y][x].cellElement.addEventListener("click", () => {
+        if (gameEnds) return;
+        if (!gameBegins) {
+          gameBegins = true;
+        }
+        if (minesweeperGrid[y][x].hasMine) {
+          revealMines(minesweeperGrid, mineCoordinates);
+          resetButton.textContent = "😞";
+          gameEnds = true;
+          return;
+        } else {
+          revealCells(
+            minesweeperGrid,
+            minesweeperGrid[y][x].rowIndex,
+            minesweeperGrid[y][x].colIndex
+          );
+        }
+      });
+      minesweeperGrid[y][x].cellElement.addEventListener(
+        "contextmenu",
+        (event: MouseEvent) => {
+          // Prevents the right-click menu
+          event.preventDefault();
+          plantFlag(minesweeperGrid, y, x);
+        }
+      );
     }
   }
-}
+};
 
-resetButton.textContent = "😀";
+resetButton.addEventListener("click", () => {
+  resetButton.innerHTML = "";
+  resetButton.style.backgroundColor = "#384048";
+  resetButton.style.borderTop = "none";
+  resetButton.style.borderRight = "none";
+  resetButton.style.borderBottom = "none";
+  resetButton.style.borderLeft = "none";
+  startGame();
+});
 
-// for (let row of minesweeperGrid) {
-//   for (let cell of row) {
-//     if (cell.adjacentMines === 1) {
-//       cell.cellElement.setAttribute("style", "background-color: #0000ff;");
-//     } else if (cell.adjacentMines === 2) {
-//       cell.cellElement.setAttribute("style", "background-color: #008200;");
-//     } else if (cell.adjacentMines === 3) {
-//       cell.cellElement.setAttribute("style", "background-color: #ff0000;");
-//     } else if (cell.adjacentMines === 4) {
-//       cell.cellElement.setAttribute("style", "background-color: #000084;");
-//     } else if (cell.adjacentMines === 5) {
-//       cell.cellElement.setAttribute("style", "background-color: #840000;");
-//     } else if (cell.adjacentMines === 6) {
-//       cell.cellElement.setAttribute("style", "background-color: #008284;");
-//     } else if (cell.adjacentMines === 7) {
-//       cell.cellElement.setAttribute("style", "background-color: #840084;");
-//     } else if (cell.adjacentMines === 8) {
-//       cell.cellElement.setAttribute("style", "background-color: #757575;");
-//     }
-//   }
-// }
+startGame();
