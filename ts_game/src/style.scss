@@ -78,7 +78,7 @@ header {
   // overflow: hidden;
 
   &__counter {
-    background-color: #bc171a;
+    background-color: black;
     border-top: 3px solid #20262e;
     border-right: 3px solid #5b6067;
     border-bottom: 3px solid #5b6067;
@@ -86,6 +86,14 @@ header {
 
     width: 83px;
     height: 53px;
+
+    color: #bc171a;
+    font-size: xx-large;
+    font-weight: bolder;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   &__reset-btn {
@@ -106,7 +114,7 @@ header {
   }
 
   &__timer {
-    background-color: #bc171a;
+    background-color: black;
     border-top: 3px solid #20262e;
     border-right: 3px solid #5b6067;
     border-bottom: 3px solid #5b6067;
@@ -114,6 +122,14 @@ header {
 
     width: 83px;
     height: 53px;
+
+    color: #bc171a;
+    font-size: xx-large;
+    font-weight: bolder;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 

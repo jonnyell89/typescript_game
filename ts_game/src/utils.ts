@@ -47,12 +47,12 @@ export const generateGrid = (
 
 export const assignMines = (
   grid: Cell[][],
-  numberOfMines: number
+  mineCount: number
 ): MineCoordinate[] => {
   const mineCoordinates: MineCoordinate[] = [];
   let assignedMines = 0;
 
-  while (assignedMines < numberOfMines) {
+  while (assignedMines < mineCount) {
     // Generates random coordinates
     const yRandom = Math.floor(Math.random() * grid.length);
     const xRandom = Math.floor(Math.random() * grid.length);
@@ -135,44 +135,61 @@ export const revealCells = (grid: Cell[][], y: number, x: number) => {
 };
 
 export const revealCell = (grid: Cell[][], y: number, x: number) => {
-  if (grid[y][x].isHidden) {
-    grid[y][x].isHidden = false;
-    // Adjusts styling of pressed buttons
-    grid[y][x].cellElement.style.backgroundColor = "#384048";
-    grid[y][x].cellElement.style.borderTop = "none";
-    grid[y][x].cellElement.style.borderRight = "none";
-    grid[y][x].cellElement.style.borderBottom = "none";
-    grid[y][x].cellElement.style.borderLeft = "none";
+  const cell = grid[y][x];
 
-    if (grid[y][x].hasMine) {
-      grid[y][x].cellElement.textContent = "💣";
-      grid[y][x].cellElement.style.color = "black";
+  if (cell.hasFlag) return;
+
+  if (cell.isHidden) {
+    cell.isHidden = false;
+    // Adjusts styling of pressed buttons
+    cell.cellElement.style.backgroundColor = "#384048";
+    cell.cellElement.style.borderTop = "none";
+    cell.cellElement.style.borderRight = "none";
+    cell.cellElement.style.borderBottom = "none";
+    cell.cellElement.style.borderLeft = "none";
+
+    if (isGameWon(grid) && cell.hasMine) {
+      cell.cellElement.textContent = "🚩";
+      return;
     }
 
-    if (grid[y][x].adjacentMines === 1) {
-      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
-      grid[y][x].cellElement.style.color = "#0000ff";
-    } else if (grid[y][x].adjacentMines === 2) {
-      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
-      grid[y][x].cellElement.style.color = "#008200";
-    } else if (grid[y][x].adjacentMines === 3) {
-      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
-      grid[y][x].cellElement.style.color = "#ff0000";
-    } else if (grid[y][x].adjacentMines === 4) {
-      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
-      grid[y][x].cellElement.style.color = "#000084";
-    } else if (grid[y][x].adjacentMines === 5) {
-      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
-      grid[y][x].cellElement.style.color = "#840000";
-    } else if (grid[y][x].adjacentMines === 6) {
-      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
-      grid[y][x].cellElement.style.color = "#008284";
-    } else if (grid[y][x].adjacentMines === 7) {
-      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
-      grid[y][x].cellElement.style.color = "#840084";
-    } else if (grid[y][x].adjacentMines === 8) {
-      grid[y][x].cellElement.textContent = `${grid[y][x].adjacentMines}`;
-      grid[y][x].cellElement.style.color = "#757575";
+    if (cell.hasMine) {
+      cell.cellElement.textContent = "💣";
+      cell.cellElement.style.backgroundColor = "#bc171a";
+      cell.cellElement.style.border = "2px solid #242424";
+      return;
+    }
+
+    if (cell.adjacentMines > 0) {
+      cell.cellElement.textContent = `${cell.adjacentMines}`;
+      switch (cell.adjacentMines) {
+        case 1:
+          cell.cellElement.style.color = "#0000ff";
+          break;
+        case 2:
+          cell.cellElement.style.color = "#008200";
+          break;
+        case 3:
+          cell.cellElement.style.color = "#ff0000";
+          break;
+        case 4:
+          cell.cellElement.style.color = "#000084";
+          break;
+        case 5:
+          cell.cellElement.style.color = "#840000";
+          break;
+        case 6:
+          cell.cellElement.style.color = "#008284";
+          break;
+        case 7:
+          cell.cellElement.style.color = "#840084";
+          break;
+        case 8:
+          cell.cellElement.style.color = "#757575";
+          break;
+        default:
+          cell.cellElement.style.color = "black";
+      }
     }
   }
 };
@@ -193,6 +210,7 @@ export const revealMines = (
 };
 
 export const plantFlag = (grid: Cell[][], y: number, x: number) => {
+  // Allows flag placement to be toggled on and off
   if (grid[y][x].isHidden) {
     if (!grid[y][x].hasFlag) {
       grid[y][x].hasFlag = true;
@@ -204,6 +222,27 @@ export const plantFlag = (grid: Cell[][], y: number, x: number) => {
   } else return;
 };
 
-// export const pressReset = () => {
+export const flagCounter = (grid: Cell[][]) => {
+  let flagCount = 0;
+  for (let y = 0; y < grid.length; ++y) {
+    for (let x = 0; x < grid.length; ++x) {
+      if (grid[y][x].hasFlag) {
+        flagCount++;
+      }
+    }
+  }
+  return flagCount;
+};
 
-// }
+export const isGameWon = (grid: Cell[][]): boolean => {
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid.length; x++) {
+      // If there are still safe cells hidden in the grid
+      if (!grid[y][x].hasMine && grid[y][x].isHidden) {
+        return false;
+      }
+    }
+  }
+  // If all safe cells have been revealed
+  return true;
+};

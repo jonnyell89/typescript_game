@@ -1,15 +1,13 @@
 import "./style.scss";
-import { Cell } from "./types";
 import {
-  generateCell,
   generateGrid,
   assignMines,
   assignNumbers,
-  incrementAdjacentCells,
-  revealCell,
   revealCells,
   revealMines,
   plantFlag,
+  flagCounter,
+  isGameWon,
 } from "./utils";
 // npm run dev
 
@@ -42,10 +40,32 @@ if (
   throw new Error("The Minesweeper GUI has failed to load.");
 }
 
-// Game Logic
+// Game State
 let gameBegins = false;
 let gameEnds = false;
+let timeInterval: number;
+let seconds = 1;
 
+// Timer Functions
+const startTimer = () => {
+  stopTimer();
+  seconds = 1;
+  timer.textContent = `1`;
+  timeInterval = setInterval(() => {
+    seconds++;
+    timer.textContent = seconds.toString();
+  }, 1000);
+};
+
+const clearTimer = () => {
+  timer.innerHTML = "";
+};
+
+const stopTimer = () => {
+  clearInterval(timeInterval);
+};
+
+// Game Logic
 const startGame = () => {
   if (!grid) {
     throw new Error("The 'grid' element has failed to load.");
@@ -53,11 +73,9 @@ const startGame = () => {
 
   gameBegins = false;
   gameEnds = false;
-
   resetButton.textContent = "🙂";
-
-  // Resets the grid element
   grid.innerHTML = "";
+
   // Generates a two-dimensional array of Cell objects
   const cellMatrix = generateGrid(grid, GRID_SIZE);
   // Generates an array of MineCoordinate objects
@@ -67,45 +85,68 @@ const startGame = () => {
 
   for (let y = 0; y < minesweeperGrid.length; ++y) {
     for (let x = 0; x < minesweeperGrid.length; ++x) {
-      // Adds an event listener to every button in the grid
+      // Left-click event handlers
       minesweeperGrid[y][x].cellElement.addEventListener("click", () => {
         if (gameEnds) return;
+
         if (!gameBegins) {
           gameBegins = true;
+          startTimer();
+          counter.textContent = MINE_COUNT.toString();
         }
+
+        if (minesweeperGrid[y][x].hasFlag) return;
+
         if (minesweeperGrid[y][x].hasMine) {
           revealMines(minesweeperGrid, mineCoordinates);
           resetButton.textContent = "😞";
           gameEnds = true;
+          stopTimer();
           return;
-        } else {
-          revealCells(
-            minesweeperGrid,
-            minesweeperGrid[y][x].rowIndex,
-            minesweeperGrid[y][x].colIndex
-          );
+        }
+
+        revealCells(
+          minesweeperGrid,
+          minesweeperGrid[y][x].rowIndex,
+          minesweeperGrid[y][x].colIndex
+        );
+
+        if (isGameWon(minesweeperGrid)) {
+          // Remaining mines are revealed
+          revealMines(minesweeperGrid, mineCoordinates);
+          resetButton.textContent = "😎";
+          gameEnds = true;
+          stopTimer();
+          return;
         }
       });
+
+      // Right-click event handlers
       minesweeperGrid[y][x].cellElement.addEventListener(
         "contextmenu",
         (event: MouseEvent) => {
-          // Prevents the right-click menu
+          if (gameEnds) return;
+          if (!gameBegins) {
+            gameBegins = true;
+          }
+          // Prevents the default right-click menu
           event.preventDefault();
           plantFlag(minesweeperGrid, y, x);
+          counter.textContent = `${MINE_COUNT - flagCounter(minesweeperGrid)}`;
         }
       );
     }
   }
 };
 
+// Reset Button
 resetButton.addEventListener("click", () => {
-  resetButton.innerHTML = "";
-  resetButton.style.backgroundColor = "#384048";
-  resetButton.style.borderTop = "none";
-  resetButton.style.borderRight = "none";
-  resetButton.style.borderBottom = "none";
-  resetButton.style.borderLeft = "none";
+  stopTimer();
+  clearTimer();
+  // Resets the flag counter
+  counter.innerHTML = "";
   startGame();
 });
 
+// Starts the game
 startGame();
