@@ -150,6 +150,7 @@ export const revealCell = (grid: Cell[][], y: number, x: number) => {
 
     if (isGameWon(grid) && cell.hasMine) {
       cell.cellElement.textContent = "🚩";
+      cell.hasFlag = true;
       return;
     }
 

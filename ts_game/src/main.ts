@@ -114,6 +114,7 @@ const startGame = () => {
         if (isGameWon(minesweeperGrid)) {
           // Remaining mines are revealed
           revealMines(minesweeperGrid, mineCoordinates);
+          counter.textContent = `${MINE_COUNT - flagCounter(minesweeperGrid)}`;
           resetButton.textContent = "😎";
           gameEnds = true;
           stopTimer();
